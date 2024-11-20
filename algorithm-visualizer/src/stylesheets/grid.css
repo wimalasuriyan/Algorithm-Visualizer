@@ -1,0 +1,15 @@
+tr {
+}
+table {
+	max-width: 100%;
+	max-height: 100%;
+	align-content: center;
+	align-items: center;
+	margin: 0 auto;
+}
+td {
+	min-width: 5px;
+	height: 5px;
+	aspect-ratio : 1 / 1;
+	border: 1px solid black;
+}
