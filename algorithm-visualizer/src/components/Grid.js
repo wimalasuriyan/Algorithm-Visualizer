@@ -2,56 +2,62 @@ import React from "react";
 import "../stylesheets/grid.css";
 
 export default function Grid(props) {
-
   let rows = props.rows;
   let cols = props.cols;
 
   function handle(event) {
-   // console.log("HANDLE",event.target,props.srcfocused, event.target.style.backgroundColor);
+    // console.log("HANDLE",event.target,props.srcfocused, event.target.style.backgroundColor);
     event.preventDefault();
     if (props.srcfocused) {
       if (event.target.style.backgroundColor === "red")
-        event.target.style.backgroundColor="white";
+        event.target.style.backgroundColor = "white";
       else if (event.target.style.backgroundColor === "white") {
-        event.target.style.backgroundColor="red";
+        event.target.style.backgroundColor = "red";
         props.setsrcfocus(false);
       }
-    }
-    else {
+    } else {
       if (event.target.style.backgroundColor === "black")
-        event.target.style.backgroundColor="white";
+        event.target.style.backgroundColor = "white";
       else if (event.target.style.backgroundColor === "white")
-        event.target.style.backgroundColor="black";
+        event.target.style.backgroundColor = "black";
       else if (event.target.style.backgroundColor === "red")
-        event.target.style.backgroundColor="white";
+        event.target.style.backgroundColor = "white";
     }
   }
 
   let tablerows = [];
   for (let row = 0; row < rows; row++) {
-      let tablecols = [];
-      for (let col = 0; col < cols; col++) {
-        tablecols.push(<td key={row*cols+col} id={row*cols+col} style={{backgroundColor:"white"}} onClick={handle}></td>);
-      }
-      tablerows.push(<tr>{tablecols}</tr>);
+    let tablecols = [];
+    for (let col = 0; col < cols; col++) {
+      tablecols.push(
+        <td
+          key={row * cols + col}
+          id={row * cols + col}
+          style={{ backgroundColor: "white" }}
+          onClick={handle}
+        ></td>
+      );
+    }
+    tablerows.push(<tr>{tablecols}</tr>);
   }
-  
+
   return (
-      <div
+    <div
       style={{
         margin: "0 auto",
-        width: "98vw",
+        width: "100vw",
+        height: "100vh",
       }}
     >
-    <table id="grid">
-    <tbody>
-        {tablerows}
-    </tbody>
-    </table>
+      <table
+        style={{ backgroundColor: "black", width: "100%", height: "100%" }}
+        id="grid"
+      >
+        <tbody>{tablerows}</tbody>
+      </table>
     </div>
   );
 }
-
 
 /*
         grid.push(<>|{row},{col}</>)
