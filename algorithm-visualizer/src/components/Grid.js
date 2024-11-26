@@ -33,7 +33,7 @@ export default function Grid(props) {
         <td
           key={row * cols + col}
           id={row * cols + col}
-          style={{ backgroundColor: "white" }}
+          style={{ backgroundColor: "white", border: "solid" }}
           onClick={handle}
         ></td>
       );
@@ -47,10 +47,15 @@ export default function Grid(props) {
         margin: "0 auto",
         width: "100vw",
         height: "100vh",
+        backgroundColor: "black",
       }}
     >
       <table
-        style={{ backgroundColor: "black", width: "100%", height: "100%" }}
+        style={{
+          backgroundColor: "black",
+          width: "100%",
+          height: "100%",
+        }}
         id="grid"
       >
         <tbody>{tablerows}</tbody>

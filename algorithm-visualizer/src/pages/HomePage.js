@@ -37,7 +37,7 @@ export default function HomePage(props) {
     function showstep(step, i) {
       setTimeout(function () {
         document.getElementById(step[0] + "").style.backgroundColor = step[3];
-      }, 500 * i);
+      }, 10 * i);
     }
     let j = 0;
     for (let step of steps) {
