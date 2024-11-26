@@ -1,14 +1,16 @@
 import React from "react";
-import { Component, useState, useEffect, useContext, useRef } from "react";
+import { Component, useState, useEffect, useContext, useRef, createContext } from "react";
 import Grid from "../components/Grid.js";
 var tods = require("../backend/tods.js");
+
+export const ColorContext = createContext();
 
 export default function HomePage(props) {
   const [rows, setRows] = useState(15);
   const [cols, setCols] = useState(15);
   const [msg, setMsg] = useState("");
 
-  const [srcfocused, setsrcfocus] = useState(false);
+  const [color, setColor] = useState("black"); //black for adding blocks, red for source, blue for target cell
 
   const timer = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -17,6 +19,7 @@ export default function HomePage(props) {
     //let src = event.target[0].value; //source cell
     let intgrid = [];
     let src = 0;
+    let dst = null;
     let colorgrid = document.getElementById("grid");
     let i = 0;
     for (let tr of colorgrid.children[0].children) {
@@ -25,17 +28,19 @@ export default function HomePage(props) {
         let color = td.style.backgroundColor;
         row.push(color == "black" ? 1 : 0);
         if (color == "red") src = i;
+        if (color == "blue") dst = i;
         i++;
       }
       intgrid.push(row);
     }
     let graph = tods.gridToGraph(intgrid);
-    let steps = graph.djikstra(src)[1];
+    let steps = graph.djikstra(src, dst)[1];
 
     console.log(steps.length);
 
     function showstep(step, i) {
       setTimeout(function () {
+        //console.log("step[0]:",step[0]);
         document.getElementById(step[0] + "").style.backgroundColor = step[3];
       }, 10 * i);
     }
@@ -71,17 +76,20 @@ export default function HomePage(props) {
       }}
     >
       {msg}
+      <ColorContext.Provider value={[color, setColor]}>
       <Grid
-        srcfocused={srcfocused}
-        setsrcfocus={setsrcfocus}
         rows={50}
         cols={50}
       />
+      </ColorContext.Provider>
+
       <br />
       <br />
       DJIKSTRA TRAVERSAL
       <br />
-      <button onClick={(e) => setsrcfocus(true)}>SELECT SOURCE</button>
+      <button onClick={(e) => setColor("red")}>SELECT SOURCE</button>
+      <button onClick={(e) => setColor("blue")}>SELECT GOAL</button>
+
       <button type="submit" onClick={djik_traverse}>
         Traverse
       </button>

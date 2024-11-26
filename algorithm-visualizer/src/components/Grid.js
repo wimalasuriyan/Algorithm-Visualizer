@@ -1,28 +1,25 @@
 import React from "react";
 import "../stylesheets/grid.css";
+import { useState, createContext, useContext } from "react";
+import { ColorContext } from "../pages/HomePage.js";
 
 export default function Grid(props) {
   let rows = props.rows;
   let cols = props.cols;
+  const [color, setColor] = useContext(ColorContext);
 
+  let dragging = false;
   function handle(event) {
     // console.log("HANDLE",event.target,props.srcfocused, event.target.style.backgroundColor);
+    console.log(event, event.target);
     event.preventDefault();
-    if (props.srcfocused) {
-      if (event.target.style.backgroundColor === "red")
+
+      if (event.target.style.backgroundColor !== "white")
         event.target.style.backgroundColor = "white";
       else if (event.target.style.backgroundColor === "white") {
-        event.target.style.backgroundColor = "red";
-        props.setsrcfocus(false);
+        event.target.style.backgroundColor = color;
+        setColor("black");
       }
-    } else {
-      if (event.target.style.backgroundColor === "black")
-        event.target.style.backgroundColor = "white";
-      else if (event.target.style.backgroundColor === "white")
-        event.target.style.backgroundColor = "black";
-      else if (event.target.style.backgroundColor === "red")
-        event.target.style.backgroundColor = "white";
-    }
   }
 
   let tablerows = [];
@@ -34,15 +31,15 @@ export default function Grid(props) {
           key={row * cols + col}
           id={row * cols + col}
           style={{ backgroundColor: "white", border: "solid" }}
-          onClick={handle}
         ></td>
       );
     }
-    tablerows.push(<tr>{tablecols}</tr>);
+    tablerows.push(<tr key={"row"+row}>{tablecols}</tr>);
   }
 
   return (
     <div
+      draggable={true} onDragStart={e=>{e.preventDefault(); dragging=true;}} onMouseUp={()=>dragging=false}
       style={{
         margin: "0 auto",
         width: "100vw",
@@ -50,7 +47,8 @@ export default function Grid(props) {
         backgroundColor: "black",
       }}
     >
-      <table
+      <table onMouseMove={event=>{if (dragging) event.target.style.backgroundColor="black";}} 
+      onClick={handle}
         style={{
           backgroundColor: "black",
           width: "100%",
@@ -63,30 +61,3 @@ export default function Grid(props) {
     </div>
   );
 }
-
-/*
-        grid.push(<>|{row},{col}</>)
-
-
-return (
-    <div
-      style={{
-        margin: "0 auto",
-        width: "98vw",
-        height: "88vh",
-      }}
-    >
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(100,1fr)",
-          gridTemplateRows: "repeat(90, 1fr)",
-          height: "100%",
-          width: "100%",
-          gap: "1.2px",
-        }}
-      >
-        {renderedItems}
-      </div>
-    </div>
-  );*/
