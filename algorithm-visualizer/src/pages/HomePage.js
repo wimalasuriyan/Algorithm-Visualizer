@@ -101,7 +101,7 @@ export default function HomePage(props) {
       <div
         style={{
           position: "fixed",
-          bottom: "10",
+          bottom: 10,
           padding: "10px",
           width: "100%",
           zIndex: 1050, // Ensures it stays above most elements
