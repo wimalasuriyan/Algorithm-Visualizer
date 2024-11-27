@@ -1,5 +1,14 @@
 import React from "react";
-import { Component, useState, useEffect, useContext, useRef, createContext } from "react";
+import Button from "react-bootstrap/Button";
+
+import {
+  Component,
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  createContext,
+} from "react";
 import Grid from "../components/Grid.js";
 var tods = require("../backend/tods.js");
 
@@ -27,8 +36,13 @@ export default function HomePage(props) {
       for (let td of tr.children) {
         let color = td.style.backgroundColor;
         row.push(color == "black" ? 1 : 0);
-        if (color == "red") src = i;
-        if (color == "blue") dst = i;
+        if (color == "red") {
+          src = i;
+        }
+        if (color == "blue") {
+          duplicate();
+          dst = i;
+        }
         i++;
       }
       intgrid.push(row);
@@ -64,6 +78,10 @@ export default function HomePage(props) {
       setMsg("Table is too big, maximum 50000 cells allowed");
     }
   }
+  function duplicate() {
+    //If there is a duplicate source/goal.
+    console.log("bro");
+  }
 
   return (
     <div
@@ -77,22 +95,42 @@ export default function HomePage(props) {
     >
       {msg}
       <ColorContext.Provider value={[color, setColor]}>
-      <Grid
-        rows={50}
-        cols={50}
-      />
+        <Grid rows={39} cols={39} />
       </ColorContext.Provider>
 
-      <br />
-      <br />
-      DJIKSTRA TRAVERSAL
-      <br />
-      <button onClick={(e) => setColor("red")}>SELECT SOURCE</button>
-      <button onClick={(e) => setColor("blue")}>SELECT GOAL</button>
-
-      <button type="submit" onClick={djik_traverse}>
-        Traverse
-      </button>
+      <div
+        style={{
+          position: "fixed",
+          bottom: "10",
+          padding: "10px",
+          width: "100%",
+          zIndex: 1050, // Ensures it stays above most elements
+          backgroundColor: "white",
+          border: "solid 0.5px",
+          width: "400px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          borderRadius: "6px",
+        }}
+      >
+        <Button
+          style={{ marginRight: "2px" }}
+          onClick={(e) => setColor("red")}
+          variant="danger"
+        >
+          SELECT SOURCE
+        </Button>
+        <Button
+          style={{ marginRight: "2px" }}
+          variant="primary"
+          onClick={(e) => setColor("blue")}
+        >
+          SELECT GOAL
+        </Button>
+        <Button variant="secondary" onClick={djik_traverse}>
+          Traverse
+        </Button>
+      </div>
     </div>
   );
 }
