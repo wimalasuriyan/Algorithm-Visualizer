@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "react-bootstrap/Button";
+import Slider from '@mui/material/Slider';
 
 import {
   Component,
@@ -21,9 +22,45 @@ export default function HomePage(props) {
 
   const [color, setColor] = useState("black"); //black for adding blocks, red for source, blue for target cell
 
-  const timer = (ms) => new Promise((res) => setTimeout(res, ms));
+  const algo = useRef("djik");
+  const steps = useRef([]);
+  const step = useRef(0);
+  const requestId = useRef(-1);
+  let speed = useRef(5); //simulation speed
 
-  function djik_traverse(event) {
+  function clear() {
+    if (requestId.current !== -1)
+      cancelAnimationFrame(requestId.current);
+
+    let colorgrid = document.getElementById("grid");
+    for (let tr of colorgrid.children[0].children) {
+      for (let td of tr.children) {
+        td.style.backgroundColor = "white";
+      }
+    }
+}
+
+      const animate = (timestamp) => {
+        let i = step.current; 
+        while (i < steps.current.length && i < step.current+speed.current) {
+            document.getElementById(steps.current[i][0] + "").style.backgroundColor 
+            = steps.current[i][3];
+            i+=1;
+       }
+        step.current = i;
+        requestId.current = requestAnimationFrame(animate);
+
+      };
+
+    useEffect(() => {
+        return () => {
+          clear();
+        };
+      }, []);
+
+
+
+  function traverse(event) {
     event.preventDefault();
     //let src = event.target[0].value; //source cell
     let intgrid = [];
@@ -40,7 +77,6 @@ export default function HomePage(props) {
           src = i;
         }
         if (color == "blue") {
-          duplicate();
           dst = i;
         }
         i++;
@@ -48,22 +84,15 @@ export default function HomePage(props) {
       intgrid.push(row);
     }
     let graph = tods.gridToGraph(intgrid);
-    let steps = graph.djikstra(src, dst)[1];
+    if (algo.current === "djik")
+      steps.current = graph.djikstra(src, dst)[1];
+    else if (algo.current === "bfs")
+      steps.current = graph.bfs(src, dst)[1];
+    else if (algo.current === "dfs")
+      steps.current = graph.dfs(src, dst)[1];
 
-    console.log(steps.length);
-
-    function showstep(step, i) {
-      setTimeout(function () {
-        //console.log("step[0]:",step[0]);
-        document.getElementById(step[0] + "").style.backgroundColor = step[3];
-      }, 10 * i);
-    }
-    let j = 0;
-    for (let step of steps) {
-      //console.log(step[0]+"");
-      showstep(step, j);
-      j++;
-    }
+    step.current = 0;
+    requestId.current = requestAnimationFrame(animate);
   }
 
   function handleSubmit(event) {
@@ -77,10 +106,6 @@ export default function HomePage(props) {
     } else {
       setMsg("Table is too big, maximum 50000 cells allowed");
     }
-  }
-  function duplicate() {
-    //If there is a duplicate source/goal.
-    console.log("bro");
   }
 
   return (
@@ -127,9 +152,36 @@ export default function HomePage(props) {
         >
           SELECT GOAL
         </Button>
-        <Button variant="secondary" onClick={djik_traverse}>
+          <select defaultValue="djik" onChange={event=>algo.current = event.target.value}>
+         <option value="djik">Djikstra</option>
+         <option value="bfs">Breadth First Search</option>
+         <option value="dfs">Depth First Search</option>
+
+       </select>
+
+        <Button variant="secondary" onClick={traverse}>
           Traverse
         </Button>
+        <Button
+          style={{ marginRight: "2px" }}
+          onClick={(e) =>{steps.current=[]; clear();}}
+          variant="danger"
+        >
+          CLEAR
+        </Button>
+        <Slider
+        onChange={e=>speed.current = e.target.value}
+        aria-label="Speed"
+        defaultValue={5}
+        valueLabelDisplay="auto"
+        shiftStep={1}
+        step={1}
+        marks
+        min={1}
+        max={25}
+      />
+              <label>i Show Speed</label>
+
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ export default function Grid(props) {
   let dragging = false;
   function handle(event) {
     // console.log("HANDLE",event.target,props.srcfocused, event.target.style.backgroundColor);
-    console.log(event, event.target);
+    //console.log(event, event.target);
     event.preventDefault();
 
     if (color == "red") {
