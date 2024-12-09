@@ -1,22 +1,19 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import "../stylesheets/grid.css";
 import { useState, createContext, useContext, useref } from "react";
-import { ColorContext } from "../pages/HomePage.js";
+import { ColorContext } from "../pages/Grids.js";
 
 export default function Grid(props) {
   let rows = props.rows;
-  let cols = props.cols;
+  let cols = props.cols; 
   const [color, setColor] = useContext(ColorContext);
   var redRef = useRef(null);
   var blueRef = useRef(null);
-
   let dragging = false;
+  
   function handle(event) {
-    // console.log("HANDLE",event.target,props.srcfocused, event.target.style.backgroundColor);
-    //console.log(event, event.target);
     event.preventDefault();
-
-    if (color == "red") {
+    if (color === "red") {
       if (redRef.current === null) {
         redRef.current = event.target;
       } else {
@@ -24,7 +21,7 @@ export default function Grid(props) {
         redRef.current = event.target;
       }
     }
-    if (color == "blue") {
+    if (color === "blue") {
       if (blueRef.current === null) {
         blueRef.current = event.target;
       } else {
@@ -81,9 +78,9 @@ export default function Grid(props) {
           width: "100%",
           height: "100%",
         }}
-        id="grid"
+        
       >
-        <tbody>{tablerows}</tbody>
+        <tbody id="grid">{tablerows}</tbody>
       </table>
     </div>
   );
